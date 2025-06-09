@@ -1,0 +1,4 @@
+id,title,description,type,image_url,is_watched,user_id,created_at
+1,Inception,"A thief who steals corporate secrets through dream-sharing technology is given the inverse task of planting an idea.",movie,https://image.tmdb.org/t/p/w500/aejFHqGhnF2rlEAFW9x1fwqT7PQ.jpg,false,123e4567-e89b-12d3-a456-426614174000,2025-06-09T12:00:00Z
+2,The Office,"A mockumentary on a group of typical office workers.",series,https://image.tmdb.org/t/p/w500/b1l7qevxiVpkVFq4dmdv8RA5z1B.jpg,true,123e4567-e89b-12d3-a456-426614174000,2025-06-08T15:30:00Z
+3,Interstellar,"A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",movie,https://image.tmdb.org/t/p/w500/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg,false,123e4567-e89b-12d3-a456-426614174000,2025-06-07T10:45:00Z

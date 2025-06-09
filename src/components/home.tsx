@@ -54,6 +54,7 @@ export default function MovieListApp() {
     type: 'movie',
     image_url: ''
   });
+  const [file, setFile] = useState<File | null>(null);
 
   const loadMovies = useCallback(async () => {
     if (!user) return;
@@ -148,15 +149,45 @@ export default function MovieListApp() {
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+    }
+  };
+
   const handleAddMovie = async () => {
     if (!user || !formData.title.trim()) {
       console.log('User not authenticated or title is empty');
       return;
     }
 
+    let imageUrl = formData.image_url;
+
+    if (file) {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+      const { data, error } = await supabase.storage
+        .from('movie-images')
+        .upload(fileName, file);
+
+      if (error) {
+        alert('Ошибка загрузки изображения');
+        return;
+      }
+
+      // Получаем публичную ссылку
+      const { data: publicUrlData } = supabase
+        .storage
+        .from('movie-images')
+        .getPublicUrl(fileName);
+
+      imageUrl = publicUrlData.publicUrl;
+    }
+
     try {
       console.log('Adding movie with data:', {
         ...formData,
+        image_url: imageUrl,
         user_id: user.id,
         created_at: new Date().toISOString()
       });
@@ -165,7 +196,7 @@ export default function MovieListApp() {
         title: formData.title,
         description: formData.description,
         type: formData.type,
-        image_url: formData.image_url || 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=300&h=450&fit=crop',
+        image_url: imageUrl,
         is_watched: false,
         user_id: user.id,
         created_at: new Date().toISOString()
@@ -472,6 +503,15 @@ export default function MovieListApp() {
                   placeholder="Enter image URL or leave empty for default"
                 />
                 <p className="mt-1 text-sm text-gray-500">If left empty, a default image will be used</p>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Image File (optional)</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                />
               </div>
               
               <div className="flex space-x-3 pt-4">
